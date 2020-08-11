@@ -12,18 +12,27 @@ class DrawWgt : public QWidget {
 
 public:
   explicit DrawWgt(QWidget *parent = nullptr);
-  void setPoints(const QVector<QPointF> &points);
-  void setZoom(const double &zoom);
   ~DrawWgt();
+
+  void setXmlPoints(const QVector<QPointF> &points);
+
+  void setBinPoints(const QVector<QPointF> &points);
+  void addBinPoints(const QVector<QPointF> &points);
+  void clearBinPoints();
+  int getBinPointsCount();
+
+  void setZoom(const double &zoom);
 
 protected:
   void paintEvent(QPaintEvent *event) override;
 
 private:
-  Ui::DrawWgt *ui;
-  QVector<QPointF> points;
-  double zoom = 1;
   void paintGrid(QPainter &painter);
+
+  Ui::DrawWgt *ui;
+  QVector<QPointF> xmlPoints;
+  QVector<QPointF> binPoints;
+  double zoom = 1;
 };
 
 #endif // DRAWWGT_H

@@ -17,16 +17,16 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     drawwgt.cpp \
+    fileparser.cpp \
     findfiedialog.cpp \
     main.cpp \
-    mainwindow.cpp \
-    xmlparser.cpp
+    mainwindow.cpp
 
 HEADERS += \
     drawwgt.h \
+    fileparser.h \
     findfiedialog.h \
-    mainwindow.h \
-    xmlparser.h
+    mainwindow.h
 
 FORMS += \
     drawwgt.ui \

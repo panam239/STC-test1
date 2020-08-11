@@ -19,12 +19,15 @@ public:
 private:
   void fillTable();
   QFileInfoList filterFiles(const QFileInfoList &list);
+
   Ui::FindFieDialog *ui;
   QDir dir;
   QString mask;
   QFileSystemModel *model;
+
 private slots:
   void itemDoubleClicked(const QModelIndex &index);
+
 signals:
   void uploadFile(const QString &filePath);
 };

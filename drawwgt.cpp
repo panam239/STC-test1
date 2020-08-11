@@ -1,16 +1,33 @@
+#include <QPainter>
+
 #include "drawwgt.h"
 #include "ui_drawwgt.h"
-#include <QDebug>
-#include <QPainter>
 
 DrawWgt::DrawWgt(QWidget *parent) : QWidget(parent), ui(new Ui::DrawWgt) {
   ui->setupUi(this);
 }
 
-void DrawWgt::setPoints(const QVector<QPointF> &points) {
-  this->points = points;
+void DrawWgt::setXmlPoints(const QVector<QPointF> &points) {
+  this->xmlPoints = points;
   repaint();
 }
+
+void DrawWgt::setBinPoints(const QVector<QPointF> &points) {
+  this->binPoints = points;
+  repaint();
+}
+
+void DrawWgt::addBinPoints(const QVector<QPointF> &points) {
+  this->binPoints.append(points);
+  repaint();
+}
+
+void DrawWgt::clearBinPoints() {
+  this->binPoints.clear();
+  repaint();
+}
+
+int DrawWgt::getBinPointsCount() { return this->binPoints.count(); }
 
 void DrawWgt::setZoom(const double &zoom) {
   this->zoom = zoom;
@@ -20,7 +37,6 @@ void DrawWgt::setZoom(const double &zoom) {
 DrawWgt::~DrawWgt() { delete ui; }
 
 void DrawWgt::paintGrid(QPainter &painter) {
-  // qDebug() << "__PRETTY_FUNCTION__" << zoom;
   painter.setPen(QPen(Qt::black, 1, Qt::SolidLine, Qt::FlatCap));
 
   painter.drawLine(0, height() / 2, width(), height() / 2);
@@ -46,20 +62,29 @@ void DrawWgt::paintGrid(QPainter &painter) {
 
 void DrawWgt::paintEvent(QPaintEvent *event) {
   Q_UNUSED(event);
-  QPainter painter(this); // Создаём объект отрисовщика
-  // Устанавливаем кисть абриса
+  QPainter painter(this);
   paintGrid(painter);
 
-  painter.setPen(QPen(Qt::red, 1, Qt::SolidLine, Qt::FlatCap));
-  for (auto &point : points) {
+  painter.setPen(QPen(Qt::black, 1, Qt::SolidLine, Qt::SquareCap));
+  for (auto &point : binPoints) {
+    if (qAbs(point.x() / zoom) <= 4 && qAbs(point.y() / zoom) <= 4) {
+      double centerX = point.x() / zoom + 4;
+      double centerY = 4 - point.y() / zoom;
+
+      painter.drawPoint(width() * centerX / 8, height() * centerY / 8);
+    }
+  }
+
+  painter.setPen(QPen(Qt::red, 1, Qt::SolidLine, Qt::SquareCap));
+  for (auto &point : xmlPoints) {
     if (qAbs(point.x() / zoom) <= 4 && qAbs(point.y() / zoom) <= 4) {
       double centerX = point.x() / zoom + 4;
       double centerY = 4 - point.y() / zoom;
       painter.drawLine(width() * centerX / 8, height() * centerY / 8 - 3,
-                       width() * centerX / 8, height() * centerY / 8 + 4);
+                       width() * centerX / 8, height() * centerY / 8 + 3);
 
       painter.drawLine(width() * centerX / 8 - 3, height() * centerY / 8,
-                       width() * centerX / 8 + 4, height() * centerY / 8);
+                       width() * centerX / 8 + 3, height() * centerY / 8);
     }
   }
 }
